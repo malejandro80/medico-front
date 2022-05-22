@@ -24,8 +24,8 @@ jobs:
           node-version: 14
       - name: install dependecies
         run: npm install ci
-      - name: run linter
-        run: npm run lint
+      # - name: run linter
+      #   run: npm run lint
       - name: deploy to vercel
         uses: amondnet/vercel-action@v20
         with:
