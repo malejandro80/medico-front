@@ -23,6 +23,14 @@ jobs:
         with:
           node-version: 14
       - name: install dependecies
-        run: npm install
+        run: npm install ci
       - name: run linter
         run: npm run lint
+      - name: deploy to vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} # Required
+          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
+          vercel-org-id: ${{ secrets.ORG_ID}} #Required
+          vercel-project-id: ${{ secrets.PROJECT_ID}} #Required
+          working-directory: ./sub-directory
