@@ -1,5 +1,6 @@
 # @format
-name: deploy
+
+name: deploy pipeline
 
 on:
   push:
@@ -13,3 +14,15 @@ jobs:
       - name: Echo
         run: |
           echo "hola mundo "
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: install dependecies
+        run: npm install
+      - name: run linter
+        run: npm run lint
