@@ -59,8 +59,8 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: dist
-          path: dist
+          name: .next
+          path: .next
   tests:
     needs: [lint, build]
     runs-on: ubuntu-18.04
@@ -85,8 +85,8 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v2
         with:
-          name: dist
-          path: dist
+          name: .next
+          path: .next
       - name: test
         run: |
           npm run test
