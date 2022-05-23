@@ -2,7 +2,7 @@
   "version": 2,
   "public": false,
   "github": {
-    "enabled": false
-  },
-  "builds": [{ "src": "{{Source for distribution}}", "use": "@vercel/static" }]
+    "enabled": false,
+    "silent": true
+  }
 }
