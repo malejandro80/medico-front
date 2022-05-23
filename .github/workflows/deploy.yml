@@ -2,34 +2,35 @@
 
 name: deploy pipeline
 
-on:
-  push:
-    branches:
-      - main
-
+on: [push, pull_request]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo
-        run: |
-          echo "hola mundo "
       - name: Checkout project
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
       - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: install dependecies
-        run: npm install ci
-      # - name: run linter
-      #   run: npm run lint
-      - name: Deploy to Vercel Action
-        uses: BetaHuhn/deploy-to-vercel-action@v1
+      - name: Build
+        run: |
+          yarn install --frozen-lockfile
+          npm run bundle
+      - name: Deploy to Staging
+        uses: amondnet/vercel-action@v20
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: '--prod'
+          scope: ${{ secrets.ORG_ID }}
