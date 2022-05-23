@@ -24,7 +24,6 @@ jobs:
       - name: Build
         run: |
           yarn install --frozen-lockfile
-          npm run bundle
       - name: Deploy to Staging
         uses: amondnet/vercel-action@v20
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
