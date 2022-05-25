@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>tring again</h1>
+        <h1 className={styles.title}>tring again test</h1>
 
         <p className={styles.description}>
           Get started by editing{' '}
