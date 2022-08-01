@@ -1,3 +1,3 @@
 /** @format */
 
-module.exports = {}
+module.exports = {};
