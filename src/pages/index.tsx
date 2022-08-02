@@ -21,7 +21,9 @@ const Index = () => {
           alt="Nextjs starter banner"
         />
       </a>
-      <h1 className="text-2xl font-bold">tring again</h1>
+      <h1 className="text-2xl font-bold">
+        Boilerplate code for your Nextjs project with Tailwind CSS
+      </h1>
       <p>
         <span role="img" aria-label="rocket">
           🚀
