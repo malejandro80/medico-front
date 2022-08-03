@@ -1,13 +1,10 @@
-# @format
-
-name: deploy pipeline
-
 on:
   push:
     branches:
       - main
   pull_request:
-      types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
+name: deploy pipeline
 jobs:
   avoid_redunday:
     runs-on: ubuntu-18.04
