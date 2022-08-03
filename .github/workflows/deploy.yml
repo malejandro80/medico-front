@@ -1,6 +1,7 @@
 # @format
 
 name: deploy pipeline
+on:
   push:
     branches:
       - master
