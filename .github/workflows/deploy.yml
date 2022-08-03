@@ -35,7 +35,7 @@ jobs:
           yarn install --frozen-lockfile
       - name: lint
         run: npm run lint
-   sonarcloud:
+  sonarcloud:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
