@@ -76,7 +76,7 @@ jobs:
           name: .next
           path: .next
   tests:
-    needs: [lint, build]
+    needs: [lint,sonarcloud,build]
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout project
