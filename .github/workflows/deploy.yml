@@ -6,46 +6,26 @@ name: deploy pipeline
 jobs:
   avoid_redunday:
     runs-on: ubuntu-18.04
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
-      - name: Post to a Slack channel
-        id: slack
-        uses: slackapi/slack-github-action@v1.21.0
-        with:
-          channel-id: 'C03SAP8QR4L'
-          payload: |
-            {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      - uses: act10ns/slack@v1
-        with:
-          status: starting
-          channel: '#ci-cd'
-          message: Starting Deployment
-        if: always()
   lint:
     runs-on: ubuntu-18.04
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
+      - name: Notify slack success
+        if: success()
+        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: app-alerts
+          status: STARTING
+          color: warning
+
       - name: Checkout project
-        id: linter
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -64,19 +44,10 @@ jobs:
           yarn install --frozen-lockfile
       - name: lint
         run: npm run lint
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci-cd'
-        if: always()
   sonarcloud:
     runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
     - uses: actions/checkout@v2
-      id: sonarcloud
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
@@ -85,19 +56,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - uses: act10ns/slack@v1
-      with:
-        status: ${{ job.status }}
-        steps: ${{ toJson(steps) }}
-        channel: '#ci-cd'
-      if: always()
   build:
     runs-on: ubuntu-18.04
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
-        id: build
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -122,20 +84,26 @@ jobs:
         with:
           name: .next
           path: .next
-      - uses: act10ns/slack@v1
+  success-pre-build:
+    needs: [lint,sonarcloud,build]
+    runs-on: ubuntu-18.04
+    steps: 
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci-cd'
-        if: always()
+          # Updates existing message from the first step
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: app-alerts
+          status: SUCCESS
+          color: good
   tests:
     needs: [lint,sonarcloud,build]
     runs-on: ubuntu-18.04
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
-        id: tests
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -160,20 +128,11 @@ jobs:
       - name: test
         run: |
           npm run test
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci-cd'
-        if: always()
   deploy:
     needs: [tests]
     runs-on: ubuntu-18.04
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
-        id: deploy
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -199,9 +158,3 @@ jobs:
           vercel-project-id: ${{ secrets.PROJECT_ID }}
           vercel-args: '--prod'
           scope: ${{ secrets.ORG_ID }}
-      - uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#ci-cd'
-        if: always()
