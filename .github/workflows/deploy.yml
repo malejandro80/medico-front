@@ -6,6 +6,8 @@ name: deploy pipeline
 jobs:
   avoid_redunday:
     runs-on: ubuntu-18.04
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -39,6 +41,8 @@ jobs:
         if: always()
   lint:
     runs-on: ubuntu-18.04
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
         id: linter
@@ -68,6 +72,8 @@ jobs:
         if: always()
   sonarcloud:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
     - uses: actions/checkout@v2
       id: sonarcloud
@@ -87,6 +93,8 @@ jobs:
       if: always()
   build:
     runs-on: ubuntu-18.04
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
         id: build
@@ -123,6 +131,8 @@ jobs:
   tests:
     needs: [lint,sonarcloud,build]
     runs-on: ubuntu-18.04
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
         id: tests
@@ -159,6 +169,8 @@ jobs:
   deploy:
     needs: [tests]
     runs-on: ubuntu-18.04
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout project
         id: deploy
