@@ -34,6 +34,10 @@ jobs:
         with:
           github-token: ${{ github.token }}
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK }}
+          custom-facts: |
+            - name: Custom Fact Name 1
+              value: Custom Fact Value 1
+            - name: Pull Request example
           environment: development
           show-on-failure: true
   lint:
