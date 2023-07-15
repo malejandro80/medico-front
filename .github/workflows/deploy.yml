@@ -14,13 +14,16 @@ jobs:
         with:
           access_token: ${{ github.token }}
   notify:
+  
     runs-on: ubuntu-latest
     steps:
-      - name: 📣 Send teams notification
-        uses: simbo/msteams-message-card-action@latest
+      - uses: actions/checkout@v2
+      # this is the new step
+      - uses: toko-bifrost/ms-teams-deploy-card@master #  or "./" if in a local set-up
+        if: always()
         with:
-          webhook: ${{ secrets.TEAMS_WEBHOOK }}
-          message: starting deploy
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.TEAMS_WEBHOOK }}
   lint:
     runs-on: ubuntu-latest
     steps:
