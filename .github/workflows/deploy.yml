@@ -18,12 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # this is the new step
       - uses: toko-bifrost/ms-teams-deploy-card@master #  or "./" if in a local set-up
         if: always()
         with:
           github-token: ${{ github.token }}
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK }}
+          card-layout-start: cozy
+          card-layout-exit: complete
   lint:
     runs-on: ubuntu-latest
     steps:
