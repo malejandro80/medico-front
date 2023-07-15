@@ -13,6 +13,14 @@ jobs:
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📣 Send teams notification
+        uses: simbo/msteams-message-card-action@latest
+        with:
+          webhook: ${{ secrets.TEAMS_WEBHOOK }}
+          message: starting deploy
   lint:
     runs-on: ubuntu-latest
     steps:
