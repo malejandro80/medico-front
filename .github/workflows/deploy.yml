@@ -7,14 +7,14 @@ on:
 name: deploy pipeline
 jobs:
   avoid_redunday:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
   lint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
       - name: lint
         run: npm run lint
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -65,7 +65,7 @@ jobs:
           path: .next
   tests:
     needs: [lint,build]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
@@ -94,7 +94,7 @@ jobs:
           npm run test
   deploy:
     needs: [tests]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
