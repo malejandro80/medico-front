@@ -1,3 +1,4 @@
+import { MyButton } from '@abacenters/aba-storybook-fe';
 import { useRouter } from 'next/router';
 
 import { Meta } from '@/layouts/Meta';
@@ -21,6 +22,12 @@ const Index = () => {
           alt="Nextjs starter banner"
         />
       </a>
+      <MyButton
+        label="olaaa"
+        onClick={() => {
+          console.log('hola');
+        }}
+      />
       <h1 className="text-2xl font-bold">
         Boilerplate code for your Nextjs project with Tailwind CSS
       </h1>
