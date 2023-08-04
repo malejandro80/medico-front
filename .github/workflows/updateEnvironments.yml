@@ -24,4 +24,4 @@ jobs:
           git reset --hard origin/dev-nasu
       - name: Push the updated branch X
         run: |
-          git push -f origin/dev-helens
+          git push origin/dev-helens HEAD:origin/dev-nasu
