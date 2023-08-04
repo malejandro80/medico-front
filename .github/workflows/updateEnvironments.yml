@@ -21,6 +21,6 @@ jobs:
           git config user.name "Update branch"
           git config user.email github-actions@github.com
           git checkout dev-helens
-          git reset --hard origin/dev-nasu
-          git push -f origin/dev-helens
+          git reset --hard dev-nasu
+          git push -f dev-helens
 
