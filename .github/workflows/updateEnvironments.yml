@@ -24,10 +24,7 @@ jobs:
       - name: reset hard
         run: |
           git reset --hard dev-nasu
-      - name: reset hard
-        run: |
-          git merge dev-nasu --no-edit -m "Merged main branch on $(date +%F)"
       - name: Push the updated branch X
         run: |
-          git push origin dev-helens
+          git push -f origin dev-helens
 
