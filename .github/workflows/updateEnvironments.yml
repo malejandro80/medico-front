@@ -1,0 +1,27 @@
+name: Update environments
+on:
+  push:
+    branches:
+      - dev-nasu
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        with:
+          # check out all branches
+          fetch-depth: 0
+          # use a personal access token to commit
+          # the merged code and trigger CI actions
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Git branch X
+        run: |
+          git config user.name "Update branch"
+          git config user.email github-actions@github.com
+          git checkout dev-helens
+          git reset --hard origin/dev-nasu
+      - name: Push the updated branch X
+        run: |
+          git push -f origin/dev-helens
