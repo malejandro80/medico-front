@@ -21,7 +21,11 @@ jobs:
           git config user.name "Update branch"
           git config user.email github-actions@github.com
           git checkout dev-helens
+      - name: reset hard
+        run: |
           git reset --hard origin dev-nasu
+      - name: reset hard
+        run: |
           git merge dev-nasu --no-edit -m "Merged main branch on $(date +%F)"
       - name: Push the updated branch X
         run: |
